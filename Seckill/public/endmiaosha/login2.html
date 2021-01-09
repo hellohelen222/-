@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>秒杀系统</title>
+        <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.1/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<!-- 1. 导入css -->
+		<link href="https://cdn.bootcss.com/element-ui/2.14.1/theme-chalk/index.css" rel="stylesheet">
+		<!-- 2. 引入vue和vue-router-->
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+		<!-- 未使用vue路由功能可不导入 -->
+		<script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
+		<!-- 3. 引入ElementUI组件 -->
+		<script src="https://cdn.bootcss.com/element-ui/2.14.1/index.js"></script>
+		<style>
+            *{
+              margin: 0;
+              padding: 0;
+            }
+            body{
+              background: rgba(0, 0, 0, .1);
+              /* background: #061227; */
+            }
+            form{
+              width: 600px;
+              margin: 100px auto;
+            }
+            .box{
+              height: 40px;
+              line-height: 40px;
+            }
+            .tip{
+              float: left;
+            }
+            input{
+              float: left;
+              width: 200px;
+              height: 30px;
+              padding: 3px 10px;
+              line-height: 30px;
+            }
+            #identify{
+              float: left;
+              width: 100px;
+              height: 40px;
+              line-height: 40px;
+              font-weight: bold;
+              text-align: center;
+              letter-spacing: 2px;
+              background: #365c64;
+              color: #fff;
+              border-radius: 5px;
+              margin: 0 10px;
+            }
+            .btn{
+              margin: 25px auto;
+            }
+            .btn button{
+              width: 200px;
+              height: 36px;
+              line-height: 36px;
+              background: #409eff;
+              border-radius: 5px;
+              border: 0;
+              color: #fff;
+            }
+          </style>
+
+
+</head>
+<body>
+    
+  
+  <div id="app">
+    <input type="text" v-model="loginForm.username" placeholder="用户名" />
+    <input type="text" v-model="loginForm.password" placeholder="密码" />
+    <div class="box">
+        <span class="tip">验证码：</span>
+        <input type="text" id="text" value="" placeholder="请输入验证码" autocomplete="on">
+        <span id="identify" onclick="generatedCode()"></span>
+        <a href="javascript:void(0)" onclick="generatedCode()">看不清，换一张</a>
+     </div>
+    
+     <div class="btn"><button @click="login" >登录</button></div>
+    
+  </div>
+
+  
+  <script>
+    //generatedCode();
+    // 随机生成验证码
+      function generatedCode() {
+        var code1 = "";//生成的验证码 
+        var array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        for (let i = 0; i < 4; i++) {
+          var index = Math.floor(Math.random() * 36);//随机0-35
+          code1 += array[index];
+          document.getElementById("identify").innerHTML = code1;
+        }
+       console.log("二维码是：",code1)
+     };
+    
+ </script>
+
+  <script>
+    var app = new Vue({
+        el: '#app',
+        data:{
+            loginForm: {
+            username: '', 
+            password: '',
+            
+            }
+        },
+        methods:{
+            login:function() {
+                //let _this = this;
+               /*
+                if (this.loginForm.username === '' || this.loginForm.password === '') {
+                    alert('账号或密码不能为空');
+                }
+                */
+                var code2 = document.getElementById("identify").innerHTML;//获取当前生成的验证码
+                code2 = code2.toUpperCase();
+          
+                var code3 = document.getElementById("text").value; //客户输入的验证码
+                code3 = code3.toUpperCase();//把客户输入的验证码转换为大写
+                console.log("生成的二维码是:"+ code2 +"\n用户输入的验证码是:"+ code3)
+                if (code3 === null || code3 === ''){
+                    alert("输入验证码为空，请点击验证码");
+                    
+                }else if (code2 === code3) {
+                    alert("恭喜验证成功");
+                    //window.localStorage.removeItem('token')
+                
+                    let token = localStorage.getItem('token');
+                    console.log(token)
+                    //json_encode($token);
+                    
+                   if (token === null || token === ''){
+                       if (this.loginForm.username === '' || this.loginForm.password === '') {
+                            alert('账号或密码不能为空');
+                        }else{
+                          
+                       //console.log("111111")
+                         axios({
+                            method: 'post',
+                            url: '//81.70.222.94/miaosha/Login.php',
+                            data: this.loginForm
+                        }).then(response => {
+                            //var result = response.data.parseJSON(response.data);
+                            if (response.status==200) {
+                                
+                                //console.log(response.data.message);
+                                console.log(response.data);
+                                
+                                localStorage.setItem('token', response.data);
+                                //console.log( this.loginForm.token);
+                                console.log("登录成功");
+                                location.href = 'info.html'; 
+                            }else{
+                                    alert('账号或密码错误');
+                                    console.log("登录失败");
+                                    
+                                }
+                          }).catch(error => {
+                            alert('账号或密码错误');
+                            console.log(error);
+                        });
+                        }
+                    
+                        
+                   }else if(this.loginForm.username != '' && this.loginForm.password != '') {
+                            alert('更新用户');//前端无法解析token，就只能判断用户是否重新输入
+                            window.localStorage.removeItem('token')
+                            axios({
+                            method: 'post',
+                            url: '//81.70.222.94/miaosha/Login.php',
+                            data: this.loginForm
+                            }).then(response => {
+                            //var result = response.data.parseJSON(response.data);
+                                if (response.status==200) {
+                                    
+                                    //console.log(response.data.message);
+                                    console.log(response.data);
+                                    
+                                    localStorage.setItem('token', response.data);
+                                    //console.log( this.loginForm.token);
+                                    console.log("登录成功");
+                                    location.href = 'info.html'; 
+                                }else{
+                                    alert('账号或密码错误');
+                                    console.log("登录失败");
+                                    
+                                }
+                          }).catch(error => {
+                            alert('账号或密码错误');
+                            console.log(error);
+                          });
+                            
+                    
+                   }
+                   else{
+                         axios.get('//81.70.222.94/miaosha/Login.php',{
+                            params:{
+                                token:localStorage.getItem('token') ,
+                            },
+                        })
+                        .then((res)=>{
+                            console.log(res);   //  处理成功的函数 相当于success
+                            console.log("登录成功");
+                            location.href = 'info.html';
+                        })
+                        .catch((error)=>{
+                            console.log(error)  //  错误处理 相当于error
+                        })
+                        /*
+                        axios({
+                            method: 'post',
+                            url: '//81.70.222.94/temp/Login.php',
+                            data: _this.loginForm
+                        }).then(response => {
+                            if (response.status==200) {
+                                
+                                //console.log(response.data.message);
+                                console.log(response.data);
+                                
+                                localStorage.setItem('token', response.data);
+                                console.log( localStorage.getItem('token'));
+                                console.log("登录成功");
+                            }
+                          }).catch(error => {
+                            alert('账号或密码错误');
+                            console.log(error);
+                        });
+                        */
+                    }
+                 
+               } else {
+                 alert("输入的验证码不正确");
+                 code3 = "";//清空用户输入
+               }
+                
+                
+                
+            }//loginfunc
+        }//method
+    })//vue
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body onload="miaosha();">
+<p class="tit_right" style="">
+    <span id="d" style="">00</span>天
+    <span id="h" style="">00</span>小时
+    <span id="m" style="">00</span>分
+    <span id="s" style="">00</span>秒
+</p>
+<p>所购买物品:</p><input type="text" name="goodsname" id="goodsname" required="required"><br> 
+<p>所购买个数</p><input type="text" name="goodscount" id="goodscount" required="required"><br>
+    
+    
+    <input type="button" name="btn" id="btn" onclick="legalCheck()" value="立即秒杀" />
+        <br />
+        结果：<div id="myDiv"></div>
+        <br />
+
+<p style="" id="juli"></p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.js"></script>
+<script>
+    
+    var timer = null
+    function miaosha(year, month, day, hour, minute, second) {
+        let token = localStorage.getItem('token');
+        if (token === null || token === ''){
+            location.href = 'login.html'; 
+        }
+        let newDate = new Date();
+        let newDate1 = new Date(year, month - 1, day, hour, minute, second);
+        let leftTime = (new Date(year, month - 1, day, hour, minute, second)) - (new Date());
+        let days = parseInt(leftTime / 1000 / 60 / 60 / 24, 10);
+        let hours = parseInt(leftTime / 1000 / 60 / 60 % 24, 10);
+        let minutes = parseInt(leftTime / 1000 / 60 % 60, 10);
+        let seconds = parseInt(leftTime / 1000 % 60, 10);
+        if (seconds < 0) {
+            /// 进行开始的操作
+            timer && clearTimeout(timer);
+        }
+        else {
+            days = fix(days, 2);
+            hours = fix(hours, 2);
+            minutes = fix(minutes, 2);
+            seconds = fix(seconds, 2);
+            timer = setTimeout("miaosha(2020,12,27,15,59,59)", 1000);  //// 设置开始的时间
+            document.getElementById("h").innerHTML = hours;
+            document.getElementById("m").innerHTML = minutes;
+            document.getElementById("s").innerHTML = seconds;
+            document.getElementById("d").innerHTML = days;
+        }
+    }
+    //fix函数：将1~9的1位数转换成01~09的格式
+    function fix(num, length) {
+        return ('' + num).length < length ? ((new Array(length + 1)).join('0') + num).slice(-length) : '' + num;
+    }
+</script>
+
+<script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+       <script type="text/javascript">
+           //ajax异步传输基本步骤
+             function XMLhttpr () {
+                 let token = localStorage.getItem('token');
+                if (token === null || token === ''){
+                    location.href = 'login.html'; 
+                }
+               //1.创建XMLHttpRequest对象
+               var xhtp;
+               if(window.XMLHttpRequest){
+                   //支持ie6 以上
+                   xhtp=new XMLHttpRequest();
+               }else{
+                   xhtp=new ActiveXObject("Microsoft.XMLHTTP");
+               }  
+               
+               //2.规定请求
+           　　xhtp.open("POST","order7.php",true);
+           　　 xhtp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+           　　 //xhtp.send("name=Henry&age=18");
+               xhtp.send("goodsname="+$("#goodsname").val()+"&"+"goodscount="+$("#goodscount").val()+"&"+"token="+token);    
+
+               //3.发送请求
+               //xhtp.send();
+               
+               //4.响应请求
+               xhtp.onreadystatechange=function () {
+                   if(xhtp.readyState==4  &&  xhtp.status==200)
+                   
+                   $("#myDiv").html(xhtp.responseText);//在当前页面显示php文件的数据
+               }
+           }
+           $(function () {
+               $("#btn").click(XMLhttpr);
+           })
+       </script>
+      
+       <script type="text/javascript">
+       function legalCheck(){
+           if (goodsname==""){
+		    alert("商品名不能为空！");
+  		    return false;
+	        }
+	        if (goodscount==""){
+		    alert("商品数量不能为空！");
+  		    return false;
+	        }
+           
+            var stringTime = "2021-1-6 16:17:00";
+            var timestamp2 = Date.parse(new Date(stringTime));
+            
+            timestamp2 = timestamp2 / 1000;  //获取到的 格式日期 的时间戳
+            timestamp2 = timestamp2.toFixed();
+            alert(timestamp2)
+            //console.log(timestamp2)
+        
+            var myDate = new Date();
+            var timestamp = myDate.getTime()/1000;  //当前时间戳 获取的时间戳为毫秒 需除1000
+            timestamp = timestamp.toFixed();
+           // console.log(timestamp)
+            //alert(timestamp)
+        
+            过了某时间 直接不可点
+            var stringTime3 = "2021-1-6 16:17:35";
+            var timestamp4 = Date.parse(new Date(stringTime3));
+            timestamp4 = timestamp4 / 1000;  //获取到的 格式日期 的时间戳
+            timestamp4 = timestamp4.toFixed();
+            //console.log(timestamp4)
+           // alert(timestamp4)
+            if(timestamp>timestamp4){
+                alert('活动已结束');
+                return;
+            }
+            
+            if(timestamp>timestamp2 && timestamp<timestamp4){
+                $("#btn").val("秒杀").removeAttr("disabled");
+                return;
+            }
+            
+            
+            var count = timestamp2 - timestamp;
+            
+            var countdown = setInterval(CountDown, 1000);
+            function CountDown() {
+                $("#btn").val("离活动开始还有" + count + "秒");
+                if (count == 0) {
+                    $("#btn").val("秒杀").removeAttr("disabled");
+                    clearInterval(countdown);
+                }
+                count--;
+            }
+        }
+
+</script>
+</body>
+
+</html>

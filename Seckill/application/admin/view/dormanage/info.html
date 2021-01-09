@@ -1,0 +1,100 @@
+<div class="page-content">
+    <div class="col-sm-6 pull-right">
+
+        <button class="btn btn-sm btn-primary pull-right" onclick="javascript:window.location.href = 'dormanage/index'">
+            返回列表
+            <i class="icon-reply icon-only"></i>
+        </button>
+    </div>
+    <div class="page-header">
+        <h1>
+            {:model('menu')->getParentNname()}
+            <small>
+                <i class="ace-icon fa fa-angle-double-right"></i>
+                {:input('id')?'编辑':'新增'}
+            </small>
+        </h1>
+    </div><!-- /.page-header -->
+
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <form class="form-horizontal" role="form" action="{:input('id')?url('edit'):url('add')}" method="post" name="myfrom" >
+                {:input('id')?'<input type="hidden" value="'.$info['id'].'" name="id">':''}
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">活动名称</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="col-xs-10 col-sm-5" value="{$info.activity_name|default=''}" name="activity_name"/>
+                    </div>
+                </div>    
+                <div class="space-4"></div>
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">商品名称</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="col-xs-10 col-sm-5" value="{$info.product_name|default=''}" name="product_name"/>
+                    </div>
+                </div>    
+                <div class="space-4"></div>
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">商品价格</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="col-xs-10 col-sm-5" value="{$info.price|default=''}" name="price"/>
+                    </div>
+                </div>    
+                <div class="space-4"></div>
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">商品数量</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="col-xs-10 col-sm-5" value="{$info.total|default=''}" name="total"/>
+                    </div>
+                </div>    
+                <div class="space-4"></div>
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">开始时间</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="col-xs-10 col-sm-5" value="{$info.start_time|default=''}" name="start_time"/>
+                    </div>
+                </div>    
+                <div class="space-4"></div>
+                
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">结束时间</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="col-xs-10 col-sm-5" value="{$info.end_time|default=''}" name="end_time"/>
+                    </div>
+                </div>    
+                <div class="space-4"></div>
+                
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">购买限制</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="col-xs-10 col-sm-5" value="{$info.buy_limit|default=''}" name="buy_limit"/>
+                    </div>
+                </div>    
+                <div class="space-4"></div>
+        
+
+                <div class="clearfix form-actions">
+                    <div class="col-md-offset-3 col-md-9">
+                        <button class="btn btn-info" type="button" onclick="myfrom.submit()">
+                            <i class="ace-icon fa fa-check bigger-110"></i>
+                            提交
+                        </button>
+                        &nbsp; &nbsp; &nbsp;
+                        <button class="btn" type="reset">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            重置
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div><!-- /.page-content -->

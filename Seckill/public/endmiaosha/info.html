@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>秒杀系统</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    {{message}}
+    <ul >
+        
+        <li v-for="(v,index) in loves"> {{v.id}}----{{v.activity_name}}----{{v.price}}----{{v.start_time}}----{{v.end_time}} </li>
+        <input name="button" type="button" value="详情" v-on:click="submit()">
+        
+    </ul>
+    
+
+    <input name="name" v-model="message">
+
+    <input name="button" type="button" value="显示信息" v-on:click="getDate()">
+
+
+</div>
+
+<script>
+    var vm=new Vue({
+        el:"#app",
+        data:{
+            message:"内容：活动ID----活动名称----商品价格----活动开始时间----活动结束时间",
+            like:"apple",
+            loves:[]//二维数组
+        },
+        methods:{
+            getDate:function(){
+                alert(333);//验证是否能够使用
+               // Vm.message="点击后修改的内容"
+                let token = localStorage.getItem('token');
+                if (token === null || token === ''){
+                    location.href = 'login.html'; 
+                }
+                $.ajax({
+                    type:'post',
+                    url: '//81.70.222.94/miaosha/Info.php',//请求目标
+                    data: "",
+                    daraType:"json",//返回数据格式类型
+                    success: function(result) {//返回数据
+                        //alert(JSON.Stringify(result));//json解析为字符串
+                        var len = result.length;
+                        vm.loves=[];//赋值为空  第二次点击时不会起效果（重复出现）
+                        for (var i=0;i<len;i++){
+                            vm.loves.push(result[i]);//push往数组中追加元素
+                        }
+                    },
+                    errer:function () {
+                        alert("显示错误");
+                    }
+                });
+
+            },
+            submit:function(){
+                alert("进入秒杀页面");//验证是否能够使用
+               // Vm.message="点击后修改的内容"
+               location.href = 'seckill3.html'; 
+            }
+
+
+        }
+
+    });
+</script>
+</body>
+</html>
